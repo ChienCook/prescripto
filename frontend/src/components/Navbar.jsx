@@ -10,7 +10,15 @@ const Navbar = () => {
 
     return (
         <div className="flex items-center justify-between py-4 mb-5 border-b border-gray-400">
-            <img src={assets.logo} alt="Prescripto" className="w-44 cursor-pointer" />
+            <img
+                onClick={() => {
+                    navigate('/');
+                    scrollTo(0, 0);
+                }}
+                src={assets.logo}
+                alt="Prescripto"
+                className="w-44 cursor-pointer"
+            />
             <ul className="hidden md:flex gap-5 font-medium items-start">
                 <NavLink to="/">
                     <li className="py-1">HOME</li>
