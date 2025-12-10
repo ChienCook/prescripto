@@ -109,6 +109,8 @@ const Appointment = () => {
                         </p>
                     </div>
                 </div>
+
+                {/* ------------ Booking slots ----------------- */}
                 <div className="sm:ml-72 sm:pl-4 mt-4 font-medium text-gray-700">
                     <p>Booking slots</p>
                     {/* when component render first time, the docSlots is empty */}
@@ -118,7 +120,7 @@ const Appointment = () => {
                                 <div
                                     onClick={() => setSlotIndex(index)}
                                     key={index}
-                                    className={`text-center py-6 min-w-16 rounded-full cursor-pointer transition-all duration-300 ${
+                                    className={`text-center py-6 min-w-16 rounded-full cursor-pointer transition-all duration-300 select-none ${
                                         slotIndex === index ? 'bg-primary text-white' : 'border border-gray-200'
                                     }`}
                                 >
