@@ -107,7 +107,9 @@ const Doctors = () => {
                                         <p>Available</p>
                                     </div>
                                     <div className="flex flex-col">
-                                        <p className="text-lg text-gray-900 font-medium">{item.name}</p>
+                                        <p className="text-lg text-gray-900 font-medium whitespace-nowrap">
+                                            {item.name}
+                                        </p>
                                         <p className="text-sm text-gray-600">{item.speciality}</p>
                                     </div>
                                 </div>

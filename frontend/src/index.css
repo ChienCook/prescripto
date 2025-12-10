@@ -14,3 +14,20 @@
 ::-webkit-scrollbar {
     @apply hidden;
 }
+
+/* Khôi phục thanh cuộn ngang */
+.restore-scrollbar::-webkit-scrollbar {
+    display: block !important; /* Bắt buộc hiện */
+    height: 8px; /* Độ dày của thanh ngang */
+}
+
+/* Màu của cục trượt */
+.restore-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1; /* Màu xám nhẹ (tương đương slate-300) */
+    border-radius: 10px; /* Bo tròn cho đẹp */
+}
+
+/* (Tuỳ chọn) Màu nền đường ray */
+.restore-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
