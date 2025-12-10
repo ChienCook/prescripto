@@ -125,7 +125,7 @@ const Appointment = () => {
                                     }`}
                                 >
                                     {/* if we check Appointment page when time greater than 21, then item[0] is empty but remain element isn't */}
-                                    <p>{item[0] && daysOfWeek[item[0].datetime.getDay()]}</p>
+                                    <p>{item[0] ? daysOfWeek[item[0].datetime.getDay()] : 'Closed'}</p>
                                     <p>{item[0] && item[0].datetime.getDate()}</p>
                                 </div>
                             ))}
