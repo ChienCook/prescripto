@@ -120,14 +120,14 @@ const MyProfile = () => {
             <div className="mt-10">
                 {isEdit ? (
                     <button
-                        className="border border-priamry py-2 px-8 rounded-full hover:bg-primary hover:text-white transition-all duration-500"
+                        className="border border-priamry py-2 px-8 rounded-full hover:bg-primary hover:text-white transition-all duration-300"
                         onClick={() => setIsEdit(false)}
                     >
                         Save information
                     </button>
                 ) : (
                     <button
-                        className="border border-priamry py-2 px-8 rounded-full hover:bg-primary hover:text-white transition-all duration-500"
+                        className="border border-priamry py-2 px-8 rounded-full hover:bg-primary hover:text-white transition-all duration-300"
                         onClick={() => setIsEdit(true)}
                     >
                         Edit
