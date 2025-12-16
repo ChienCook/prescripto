@@ -1,6 +1,7 @@
 import validator from 'validator';
 import bcrypt from 'bcrypt';
 import { v2 as cloudinary } from 'cloudinary';
+import jwt from 'jsonwebtoken';
 
 import doctorModel from '../models/doctorModel.js';
 
@@ -56,7 +57,7 @@ const addDoctor = async (req, res) => {
             address: JSON.parse(address),
             date: Date.now(),
         };
-        // save doctor document's instance to database doctor
+        // save doctor document's instance to doctor database
         const newDoctor = new doctorModel(doctorData);
         await newDoctor.save();
 
@@ -67,4 +68,22 @@ const addDoctor = async (req, res) => {
     }
 };
 
-export { addDoctor };
+// API for admin login
+
+const loginAdmin = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+            // creating token that we save in localStorage at React frontend handling
+            const token = jwt.sign(email + password, process.env.JWT_SECRET);
+            res.json({ success: true, token });
+        } else {
+            res.json({ success: false, message: 'Invalid credentials' });
+        }
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+};
+
+export { addDoctor, loginAdmin };
