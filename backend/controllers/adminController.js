@@ -74,7 +74,7 @@ const loginAdmin = async (req, res) => {
     try {
         const { email, password } = req.body;
         if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-            // creating token that we save in localStorage at React frontend handling
+            // creating token that we will be save in localStorage
             const token = jwt.sign(email + password, process.env.JWT_SECRET);
             res.json({ success: true, token });
         } else {

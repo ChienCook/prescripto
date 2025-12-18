@@ -2,7 +2,12 @@
 export default {
     content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
     theme: {
-        extend: {},
+        extend: {
+            // prettier-ignore
+            colors: {
+                'primary': '#5F6FFF',
+            },
+        },
     },
     plugins: [],
 };

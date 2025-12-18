@@ -4,11 +4,20 @@ import './index.css';
 import App from './App.jsx';
 
 import { BrowserRouter, Router, Route } from 'react-router-dom';
+import DoctorContextProvider from './context/DoctorContext';
+import AdminContextProvider from './context/AdminContext';
+import AppContextProvider from './context/AppContext';
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
         <BrowserRouter>
-            <App />
+            <AdminContextProvider>
+                <DoctorContextProvider>
+                    <AppContextProvider>
+                        <App></App>
+                    </AppContextProvider>
+                </DoctorContextProvider>
+            </AdminContextProvider>
         </BrowserRouter>
     </StrictMode>,
 );
