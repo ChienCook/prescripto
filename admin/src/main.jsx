@@ -7,6 +7,7 @@ import { BrowserRouter, Router, Route } from 'react-router-dom';
 import DoctorContextProvider from './context/DoctorContext';
 import AdminContextProvider from './context/AdminContext';
 import AppContextProvider from './context/AppContext';
+import { ToastContainer } from 'react-toastify';
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
@@ -18,6 +19,7 @@ createRoot(document.getElementById('root')).render(
                     </AppContextProvider>
                 </DoctorContextProvider>
             </AdminContextProvider>
+            <ToastContainer></ToastContainer>
         </BrowserRouter>
     </StrictMode>,
 );
