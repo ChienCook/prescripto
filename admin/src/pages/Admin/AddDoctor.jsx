@@ -129,6 +129,7 @@ const AddDoctor = () => {
                                 type="email"
                                 placeholder="Email"
                                 required
+                                autoComplete="new-email"
                             />
                         </div>
                         <div className="flex-1 flex flex-col gap-1">
@@ -140,6 +141,7 @@ const AddDoctor = () => {
                                 type="password"
                                 placeholder="Password"
                                 required
+                                autoComplete="new-password"
                             />
                         </div>
                         <div className="flex-1 flex flex-col gap-1">
@@ -149,7 +151,6 @@ const AddDoctor = () => {
                                 value={experience}
                                 className="border rounded px-3 py-2"
                                 name=""
-                                id=""
                             >
                                 <option value="1 Year">1 Year</option>
                                 <option value="2 Year">2 Year</option>
@@ -184,7 +185,6 @@ const AddDoctor = () => {
                                 value={speciality}
                                 className="border rounded px-3 py-2"
                                 name=""
-                                id=""
                             >
                                 <option value="General physician">General physician</option>
                                 <option value="Gynecologist">Gynecologist</option>
