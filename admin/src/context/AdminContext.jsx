@@ -1,5 +1,5 @@
 import { createContext, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 import axios from 'axios';
 

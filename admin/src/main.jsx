@@ -3,15 +3,16 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.jsx';
 
-import { BrowserRouter, Router, Route } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import DoctorContextProvider from './context/DoctorContext';
 import AdminContextProvider from './context/AdminContext';
 import AppContextProvider from './context/AppContext';
-import { ToastContainer } from 'react-toastify';
+import { Toaster } from 'sonner';
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
         <BrowserRouter>
+            <Toaster position="top-right" richColors></Toaster>
             <AdminContextProvider>
                 <DoctorContextProvider>
                     <AppContextProvider>
@@ -19,7 +20,6 @@ createRoot(document.getElementById('root')).render(
                     </AppContextProvider>
                 </DoctorContextProvider>
             </AdminContextProvider>
-            <ToastContainer></ToastContainer>
         </BrowserRouter>
     </StrictMode>,
 );
