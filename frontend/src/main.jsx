@@ -7,7 +7,7 @@ import AppContextProvider from './context/AppContext';
 import { Toaster } from 'sonner';
 createRoot(document.getElementById('root')).render(
     <BrowserRouter>
-        <Toaster></Toaster>
+        <Toaster position="top-right" richColors></Toaster>
         <AppContextProvider>
             <App />
         </AppContextProvider>
