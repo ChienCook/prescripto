@@ -1,0 +1,52 @@
+import validator from 'validator';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+
+import userModel from '../models/userModel.js';
+
+// API to register user
+const registerUser = async (req, res) => {
+    try {
+        const { name, email, password } = req.body;
+        if (!name || !email || !password) {
+            return res.json({ success: false, message: 'Missing Details' });
+        }
+
+        // validating email format
+        if (!validator.isEmail(email)) {
+            return res.json({ success: false, message: 'Please enter a valid email' });
+        }
+        // validating strong password
+        if (password.length < 8) {
+            return res.json({ success: false, message: 'Please enter a strong password' });
+        }
+
+        // hashing user password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const userData = {
+            name,
+            email,
+            password: hashedPassword,
+        };
+
+        const newUser = new userModel(userData);
+
+        // save user into Database
+        const user = await newUser.save();
+        // create user token
+        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
+
+        res.json({ success: true, token });
+    } catch (error) {
+        console.log(error);
+        if (error.code === 11000) {
+            res.json({ success: false, message: 'Email exists, please enter other email' });
+        } else {
+            res.json({ success: false, message: error.message });
+        }
+    }
+};
+
+export { registerUser };
