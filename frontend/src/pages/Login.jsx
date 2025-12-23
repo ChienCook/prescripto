@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import axios from 'axios';
+import { toast } from 'sonner';
+
+import { AppContext } from '@/context/AppContext';
 
 const Login = () => {
     const [state, setState] = useState('Sign Up');
@@ -7,12 +11,42 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
 
+    const { backendUrl, setToken } = useContext(AppContext);
+
     const onSubmitHandle = async (event) => {
         event.preventDefault();
+
+        try {
+            if (state === 'Login') {
+                const res = await axios.post(backendUrl + '/api/user/login', { name, password });
+                const { data } = res;
+
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    setToken(data.token);
+                } else {
+                    toast.error(data.message);
+                }
+            } else {
+                const res = await axios.post(backendUrl + 'api/user/register', { name, email, password });
+                const { data } = res;
+
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    setToken(data.token);
+                    toast.success('Sign Up Successfully');
+                } else {
+                    toast.error(data.message);
+                }
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message);
+        }
     };
 
     return (
-        <form className="min-h-[70vh] flex items-center">
+        <form onSubmit={onSubmitHandle} className="min-h-[70vh] flex items-center">
             <div className="flex flex-col gap-3 m-auto p-8 min-w-[340px] sm:min-w-96 border rounded-xl text-zinc-600 text-sm shadow-lg">
                 <p className="text-2xl font-semibold">{state === 'Sign Up' ? 'Create Account' : 'Login'}</p>
                 <p>Please {state === 'Sign Up' ? 'sign up' : 'log in'} to book appointment</p>
@@ -32,6 +66,7 @@ const Login = () => {
                     <input
                         className="border border-zinc-300 rounded w-full p-2 mt-1"
                         type="email"
+                        autoComplete={state === 'Sign Up' ? 'new-username' : 'current-username'}
                         onChange={(e) => setEmail(e.target.value)}
                         value={email}
                     />
@@ -41,11 +76,12 @@ const Login = () => {
                     <input
                         className="border border-zinc-300 rounded w-full p-2 mt-1"
                         type="password"
+                        autoComplete="email"
                         onChange={(e) => setPassword(e.target.value)}
                         value={password}
                     />
                 </div>
-                <button className="bg-primary text-white w-full py-2 rounded-md text-base">
+                <button className="bg-primary text-white w-full py-2 rounded-md text-base" type="submit">
                     {state === 'Sign Up' ? 'Create Account' : 'Login'}
                 </button>
 
