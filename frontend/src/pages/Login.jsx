@@ -1,6 +1,7 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 import { AppContext } from '@/context/AppContext';
 
@@ -11,14 +12,21 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
 
-    const { backendUrl, setToken } = useContext(AppContext);
+    const { backendUrl, setToken, token } = useContext(AppContext);
+
+    const navigate = useNavigate();
+    // whenever user login succesfully, nagivate to the home page
+    useEffect(() => {
+        if (token) {
+            navigate('/');
+        }
+    }, [token]);
 
     const onSubmitHandle = async (event) => {
         event.preventDefault();
-
         try {
             if (state === 'Login') {
-                const res = await axios.post(backendUrl + '/api/user/login', { name, password });
+                const res = await axios.post(backendUrl + '/api/user/login', { email, password });
                 const { data } = res;
 
                 if (data.success) {
