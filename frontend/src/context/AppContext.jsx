@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 export const AppContext = createContext();
 const AppContextProvider = (props) => {
     const [doctors, setDoctors] = useState([]);
-    const [token, setToken] = useState('');
+    const [token, setToken] = useState(localStorage.getItem('token') || false);
 
     const currencySymbol = '$';
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
