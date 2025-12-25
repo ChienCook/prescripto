@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 import { v2 as cloudinary } from 'cloudinary';
 
 import userModel from '../models/userModel.js';
+import appointmentModel from '../models/appointmentModel.js';
+import doctorModel from '../models/doctorModel.js';
 
 // API to register user
 const registerUser = async (req, res) => {
@@ -153,4 +155,74 @@ const updateProfile = async (req, res) => {
     }
 };
 
-export { registerUser, loginUser, getProfile, updateProfile };
+const bookingAppointment = async (req, res) => {
+    try {
+        const { userId, docId, slotTime, slotDate } = req.body;
+        if (!slotTime || !slotDate) {
+            return res.json({ success: false, message: 'Please select all fields' });
+        }
+
+        const docData = await doctorModel.findById(docId).select('-password');
+        if (!docData) {
+            return res.json({ success: false, message: 'Doctor not found' });
+        }
+
+        if (!docData.available) {
+            return res.json({ success: false, message: 'Doctor not available' });
+        }
+
+        const userData = await userModel.findById(userId).select('-password');
+        if (!userData) {
+            return res.json({ success: false, message: 'User not found' });
+        }
+
+        //  slot_booked is same like:
+        // {
+        //   "20_12_2025": ["10:00", "11:30", "15:00"],
+        //   "21_12_2025": ["09:00", "14:00"],
+        //   "25_12_2025": []
+        // }
+
+        // checking for slot availablity
+        let slot_booked = docData.slot_booked;
+
+        if (slot_booked[slotDate]) {
+            if (slot_booked[slotDate].includes(slotTime)) {
+                return res.json({ success: false, message: 'Slot not available' });
+            } else {
+                slot_booked[slotDate].push(slotTime);
+            }
+        } else {
+            slot_booked = { ...slot_booked, [slotDate]: [slotTime] };
+        }
+
+        // delete slot_booked property to save the capacity and do not want to save unnecessary things
+        // because of the slot_booked includes all appointments in the history.
+        const docDataPlain = docData.toObject(); // avoid to delete directly docData.slot_booked, because it is mongoose instance
+        delete docDataPlain.slot_booked;
+
+        const appointmentData = {
+            userId,
+            docId,
+            userData,
+            docData: docDataPlain, // save the object without slot_booked property
+            amount: docData.fees,
+            slotDate,
+            slotTime,
+            date: Date.now(),
+        };
+
+        const newAppointment = new appointmentModel(appointmentData);
+        await newAppointment.save();
+
+        // save new slots data in docData
+        await doctorModel.findByIdAndUpdate(docId, { slot_booked });
+
+        res.json({ success: true, message: 'Appointment Booked' });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+};
+
+export { registerUser, loginUser, getProfile, updateProfile, bookingAppointment };
