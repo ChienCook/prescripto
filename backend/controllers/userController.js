@@ -162,12 +162,12 @@ const bookingAppointment = async (req, res) => {
             return res.json({ success: false, message: 'Please select all fields' });
         }
 
-        const docData = await doctorModel.findById(docId).select('-password');
-        if (!docData) {
+        const doctorData = await doctorModel.findById(docId).select('-password');
+        if (!doctorData) {
             return res.json({ success: false, message: 'Doctor not found' });
         }
 
-        if (!docData.available) {
+        if (!doctorData.available) {
             return res.json({ success: false, message: 'Doctor not available' });
         }
 
@@ -184,7 +184,7 @@ const bookingAppointment = async (req, res) => {
         // }
 
         // checking for slot availablity
-        let slot_booked = docData.slot_booked;
+        let slot_booked = doctorData.slot_booked;
 
         if (slot_booked[slotDate]) {
             if (slot_booked[slotDate].includes(slotTime)) {
@@ -198,15 +198,15 @@ const bookingAppointment = async (req, res) => {
 
         // delete slot_booked property to save the capacity and do not want to save unnecessary things
         // because of the slot_booked includes all appointments in the history.
-        const docDataPlain = docData.toObject(); // avoid to delete directly docData.slot_booked, because it is mongoose instance
-        delete docDataPlain.slot_booked;
+        const doctorDataPlain = doctorData.toObject(); // avoid to delete directly doctorData.slot_booked, because it is mongoose instance
+        delete doctorDataPlain.slot_booked;
 
         const appointmentData = {
             userId,
             docId,
             userData,
-            docData: docDataPlain, // save the object without slot_booked property
-            amount: docData.fees,
+            doctorData: doctorDataPlain, // save the object without slot_booked property
+            amount: doctorData.fees,
             slotDate,
             slotTime,
             date: Date.now(),
@@ -215,7 +215,7 @@ const bookingAppointment = async (req, res) => {
         const newAppointment = new appointmentModel(appointmentData);
         await newAppointment.save();
 
-        // save new slots data in docData
+        // save new slots data in doctorData
         await doctorModel.findByIdAndUpdate(docId, { slot_booked });
 
         res.json({ success: true, message: 'Appointment Booked' });
