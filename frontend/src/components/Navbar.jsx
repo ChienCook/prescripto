@@ -1,11 +1,11 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 import { assets } from '@/assets/assets';
 import { AppContext } from '@/context/AppContext';
 
 const Navbar = () => {
-    const { token, setToken } = useContext(AppContext);
+    const { token, setToken, userData } = useContext(AppContext);
 
     const navigate = useNavigate(); // redirect
     const [showMenu, setShowMenu] = useState(false);
@@ -45,9 +45,9 @@ const Navbar = () => {
                 </NavLink>
             </ul>
             <div className="flex items-center gap-4">
-                {token ? (
+                {token && userData ? (
                     <div className="flex items-center group relative cursor-pointer gap-2">
-                        <img className="w-8 rounded-full" src={assets.profile_pic} alt="avatar" />
+                        <img className="w-8 rounded-full" src={userData.image} alt="avatar" />
                         <img className="w-2.5" src={assets.dropdown_icon} alt="" />
                         <div className="absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20 hidden group-hover:block">
                             <div className="min-w-48 bg-stone-100 rounded p-4 flex flex-col gap-4">
