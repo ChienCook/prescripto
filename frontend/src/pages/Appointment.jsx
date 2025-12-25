@@ -1,17 +1,22 @@
+import { toast } from 'sonner';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import axios from 'axios';
+
 import { assets } from '@/assets/assets';
 import RelatedDoctors from '@/components/RelatedDoctors';
 import { AppContext } from '@/context/AppContext';
-import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 
 const Appointment = () => {
     const { docId } = useParams();
-    const { doctors, currencySymbol } = useContext(AppContext);
+    const { doctors, currencySymbol, backendUrl, token, getDoctorsData } = useContext(AppContext);
     const [docInfo, setDocInfo] = useState(null);
 
     const [docSlots, setDocSlots] = useState([]);
     const [slotIndex, setSlotIndex] = useState(0);
     const [slotTime, setSlotTime] = useState('');
+
+    const navigate = useNavigate();
 
     const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
@@ -62,6 +67,47 @@ const Appointment = () => {
             docSlotsTemp.push(timeSlots);
         }
         setDocSlots(docSlotsTemp);
+    };
+
+    const bookAppointment = async () => {
+        if (!token) {
+            toast.warning('Please login to book appointment');
+            return navigate('/login');
+        }
+        try {
+            if (!docSlots[slotIndex][0]) {
+                return toast.error('Please select the date');
+            }
+
+            const date = docSlots[slotIndex][0].datetime;
+            const day = date.getDay();
+            const month = date.getMonth() + 1;
+            const year = date.getFullYear();
+            const slotDate = day + '_' + month + '_' + year;
+            const res = await axios.post(
+                backendUrl + '/api/user/book-appointment',
+                {
+                    slotDate: slotDate,
+                    slotTime,
+                    docId,
+                },
+                {
+                    headers: { token },
+                },
+            );
+
+            const { data } = res;
+            if (data.success) {
+                getDoctorsData();
+                toast.success(data.message);
+                navigate('/my-appointments');
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message);
+        }
     };
 
     useEffect(() => {
@@ -146,7 +192,10 @@ const Appointment = () => {
                                 </p>
                             ))}
                     </div>
-                    <button className="bg-primary text-white text-sm font-light px-14 py-3 rounded-3xl mt-5 hover:scale-105 transition-all duration-500">
+                    <button
+                        onClick={bookAppointment}
+                        className="bg-primary text-white text-sm font-light px-14 py-3 rounded-3xl mt-5 hover:scale-105 transition-all duration-500"
+                    >
                         Book an ppointment
                     </button>
                 </div>
