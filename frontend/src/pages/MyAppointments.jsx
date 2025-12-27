@@ -5,7 +5,7 @@ import axios from 'axios';
 import { AppContext } from '@/context/AppContext';
 
 const MyAppointments = () => {
-    const { token, backendUrl } = useContext(AppContext);
+    const { token, backendUrl, getDoctorsData } = useContext(AppContext);
     const [appointmentsData, setAppointmentsData] = useState([]);
     const monthsOfYear = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -19,6 +19,7 @@ const MyAppointments = () => {
             setAppointmentsData(
                 data.appointments.map((item) => {
                     return {
+                        ...item,
                         doctorData: item.doctorData,
                         date: item.slotDate.split('_')[0],
                         month: monthsOfYear[Number.parseInt(item.slotDate.split('_')[1]) - 1],
@@ -27,6 +28,26 @@ const MyAppointments = () => {
                     };
                 }),
             );
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message);
+        }
+    };
+
+    const cancelAppointmentHandle = async (appointmentId) => {
+        try {
+            const res = await axios.post(
+                backendUrl + '/api/user/cancel-appointment',
+                { appointmentId },
+                { headers: { token } },
+            );
+            const { data } = res;
+            if (!data.success) {
+                return toast.error(data.message);
+            }
+            getUserAppointments();
+            getDoctorsData();
+            toast.success(data.message);
         } catch (error) {
             console.log(error);
             toast.error(error.message);
@@ -63,12 +84,24 @@ const MyAppointments = () => {
                             {/* this below div is added to make component reponsive */}
                             <div></div>
                             <div className="flex flex-col gap-2 justify-end">
-                                <button className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300">
-                                    Pay Online
-                                </button>
-                                <button className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration-300">
-                                    Cancle appointment
-                                </button>
+                                {!item.canceled && (
+                                    <button className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300">
+                                        Pay Online
+                                    </button>
+                                )}
+                                {!item.canceled && (
+                                    <button
+                                        onClick={() => cancelAppointmentHandle(item._id)}
+                                        className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration-300"
+                                    >
+                                        Cancle appointment
+                                    </button>
+                                )}
+                                {item.canceled && (
+                                    <button className="sm:min-w-48 py-2 border border-red-500 text-red-500 rounded">
+                                        Appointment canceled
+                                    </button>
+                                )}
                             </div>
                         </div>
                     ))}

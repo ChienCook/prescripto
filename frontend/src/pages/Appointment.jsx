@@ -20,8 +20,8 @@ const Appointment = () => {
 
     const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
-    const fetchDocInfo = async () => {
-        const docInfo = await doctors.find((doc) => doc._id === docId);
+    const fetchDocInfo = () => {
+        const docInfo = doctors.find((doc) => doc._id === docId);
         setDocInfo(docInfo);
     };
 
@@ -63,7 +63,6 @@ const Appointment = () => {
 
                 if (docInfo.slot_booked[slotDate]) {
                     if (docInfo.slot_booked[slotDate].includes(formatedTime)) {
-                        console.log(slotDate + ' ' + formatedTime + ' was booked');
                         currentDate.setMinutes(currentDate.getMinutes() + 30);
                         continue;
                     }
@@ -129,7 +128,9 @@ const Appointment = () => {
     }, [docId, doctors]);
 
     useEffect(() => {
-        getAvailableSlots();
+        if (docInfo) {
+            getAvailableSlots();
+        }
     }, [docInfo]);
 
     return (
@@ -210,7 +211,7 @@ const Appointment = () => {
                         onClick={bookAppointment}
                         className="bg-primary text-white text-sm font-light px-14 py-3 rounded-3xl mt-5 hover:scale-105 transition-all duration-500"
                     >
-                        Book an ppointment
+                        Book an appointment
                     </button>
                 </div>
 
