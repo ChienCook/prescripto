@@ -17,23 +17,24 @@ const MyAppointments = () => {
                 return toast.error(data.message);
             }
             setAppointmentsData(
-                data.appointments.map((item) => {
-                    return {
-                        ...item,
-                        doctorData: item.doctorData,
-                        date: item.slotDate.split('_')[0],
-                        month: monthsOfYear[Number.parseInt(item.slotDate.split('_')[1]) - 1],
-                        year: item.slotDate.split('_')[2],
-                        time: item.slotTime,
-                    };
-                }),
+                data.appointments
+                    .map((item) => {
+                        return {
+                            ...item,
+                            doctorData: item.doctorData,
+                            date: item.slotDate.split('_')[0],
+                            month: monthsOfYear[Number.parseInt(item.slotDate.split('_')[1]) - 1],
+                            year: item.slotDate.split('_')[2],
+                            time: item.slotTime,
+                        };
+                    })
+                    .reverse(),
             );
         } catch (error) {
             console.log(error);
             toast.error(error.message);
         }
     };
-
     const cancelAppointmentHandle = async (appointmentId) => {
         try {
             const res = await axios.post(
@@ -59,7 +60,6 @@ const MyAppointments = () => {
             getUserAppointments();
         }
     }, [token]);
-
     return (
         appointmentsData && (
             <div>
