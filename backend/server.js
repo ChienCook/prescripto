@@ -6,6 +6,7 @@ import connectCloudinary from './config/cloudinary.js';
 import adminRouter from './routers/adminRoute.js';
 import doctorRouter from './routers/doctorRoute.js';
 import userRouter from './routers/userRouter.js';
+import paymentRouter from './routers/paymentRouter.js';
 
 // app config
 const app = express();
@@ -20,6 +21,7 @@ app.use(cors());
 app.use('/api/admin', adminRouter);
 app.use('/api/doctor', doctorRouter);
 app.use('/api/user', userRouter);
+app.use('/api/payment', paymentRouter);
 
 app.get('/', (req, res) => {
     res.send('API WORKING');
