@@ -22,6 +22,8 @@ const appointmentSchema = new mongoose.Schema({
     payment: { type: Boolean, default: false },
 
     isCompleted: { type: Boolean, default: false },
+
+    orderCode: { type: Number, default: null },
 });
 
 const appointmentModel = mongoose.models.appointment || mongoose.model('appointment', appointmentSchema);
