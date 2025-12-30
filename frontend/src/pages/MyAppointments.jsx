@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import axios from 'axios';
 
@@ -8,6 +9,9 @@ const MyAppointments = () => {
     const { token, backendUrl, getDoctorsData } = useContext(AppContext);
     const [appointmentsData, setAppointmentsData] = useState([]);
     const monthsOfYear = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
 
     const getUserAppointments = async () => {
         try {
@@ -55,11 +59,50 @@ const MyAppointments = () => {
         }
     };
 
+    const createPayment = async (appointmentId) => {
+        try {
+            const res = await axios.post(
+                backendUrl + '/api/payment/create-payment',
+                { appointmentId },
+                { headers: { token } },
+            );
+
+            const { data } = res;
+            if (!data.success) {
+                return toast.error(data.message);
+            }
+
+            window.location.replace(data.checkoutUrl);
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message);
+        }
+    };
+
     useEffect(() => {
         if (token) {
             getUserAppointments();
         }
     }, [token]);
+
+    useEffect(() => {
+        if (token) {
+            getUserAppointments();
+
+            const success = searchParams.get('success');
+            const cancel = searchParams.get('cancel');
+
+            if (success === 'true') {
+                toast.success('Thanh toán thành công!');
+
+                navigate('/my-appointments');
+            } else if (cancel === 'true') {
+                toast.error('Giao dịch đã hủy');
+                navigate('/my-appointments');
+            }
+        }
+    }, [token, searchParams]);
+
     return (
         appointmentsData && (
             <div>
@@ -84,12 +127,22 @@ const MyAppointments = () => {
                             {/* this below div is added to make component reponsive */}
                             <div></div>
                             <div className="flex flex-col gap-2 justify-end">
-                                {!item.canceled && (
-                                    <button className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300">
+                                {!item.canceled && !item.payment && (
+                                    <button
+                                        onClick={() => createPayment(item._id)}
+                                        className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300"
+                                    >
                                         Pay Online
                                     </button>
                                 )}
-                                {!item.canceled && (
+
+                                {!item.canceled && item.payment && (
+                                    <button className="text-sm text-center sm:min-w-48 py-2 border rounded bg-primary text-white transition-all duration-300">
+                                        Paid
+                                    </button>
+                                )}
+
+                                {!item.canceled && !item.payment && (
                                     <button
                                         onClick={() => cancelAppointmentHandle(item._id)}
                                         className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration-300"
@@ -97,6 +150,7 @@ const MyAppointments = () => {
                                         Cancle appointment
                                     </button>
                                 )}
+
                                 {item.canceled && (
                                     <button className="sm:min-w-48 py-2 border border-red-500 text-red-500 rounded">
                                         Appointment canceled
