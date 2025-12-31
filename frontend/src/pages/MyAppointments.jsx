@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import axios from 'axios';
+import { usePayOS } from '@payos/payos-checkout';
 
 import { AppContext } from '@/context/AppContext';
 
@@ -9,9 +9,6 @@ const MyAppointments = () => {
     const { token, backendUrl, getDoctorsData } = useContext(AppContext);
     const [appointmentsData, setAppointmentsData] = useState([]);
     const monthsOfYear = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-    const [searchParams] = useSearchParams();
-    const navigate = useNavigate();
 
     const getUserAppointments = async () => {
         try {
@@ -59,6 +56,25 @@ const MyAppointments = () => {
         }
     };
 
+    const [payOSConfig, setPayOSConfig] = useState({
+        RETURN_URL: window.location.origin,
+        ELEMENT_ID: 'payos-checkout-iframe',
+        CHECKOUT_URL: null,
+        onSuccess: (event) => {
+            setPayOSConfig((oldConfig) => ({ ...oldConfig, CHECKOUT_URL: null }));
+            getUserAppointments();
+            toast.success('Payment successfully');
+        },
+        onCancel: (event) => {
+            toast.warning('Payment canceled');
+            setPayOSConfig((oldConfig) => ({ ...oldConfig, CHECKOUT_URL: null }));
+        },
+        onExit: (event) => {
+            toast.warning('Payment exited');
+        },
+    });
+    const { open } = usePayOS(payOSConfig);
+
     const createPayment = async (appointmentId) => {
         try {
             const res = await axios.post(
@@ -71,8 +87,7 @@ const MyAppointments = () => {
             if (!data.success) {
                 return toast.error(data.message);
             }
-
-            window.location.replace(data.checkoutUrl);
+            setPayOSConfig((oldConfig) => ({ ...oldConfig, CHECKOUT_URL: data.checkoutUrl }));
         } catch (error) {
             console.log(error);
             toast.error(error.message);
@@ -86,26 +101,15 @@ const MyAppointments = () => {
     }, [token]);
 
     useEffect(() => {
-        if (token) {
-            getUserAppointments();
-
-            const success = searchParams.get('success');
-            const cancel = searchParams.get('cancel');
-
-            if (success === 'true') {
-                toast.success('Thanh toán thành công!');
-
-                navigate('/my-appointments');
-            } else if (cancel === 'true') {
-                toast.error('Giao dịch đã hủy');
-                navigate('/my-appointments');
-            }
+        if (token && payOSConfig.CHECKOUT_URL) {
+            open();
         }
-    }, [token, searchParams]);
+    }, [token, payOSConfig.CHECKOUT_URL]);
 
     return (
         appointmentsData && (
             <div>
+                <div id="payos-checkout-iframe"></div>
                 <p className="pb-3 mt-12 font-medium text-zinc-700 border-b">My Appointments</p>
                 <div>
                     {appointmentsData.map((item, index) => (

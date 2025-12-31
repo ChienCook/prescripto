@@ -22,10 +22,10 @@ const createPayment = async (req, res) => {
             orderCode: orderCode,
             amount: appointmentData.amount * 100,
             description: `book appointment ${appointmentId.slice(-6)}`,
-            // the link will redirect when user pay successfully
-            returnUrl: domain + `/my-appointments?success=true`,
-            // the link will redirect when user cancel
-            cancelUrl: domain + `/my-appointments?cancel=true`,
+
+            returnUrl: domain,
+
+            cancelUrl: domain,
         };
 
         const paymentLink = await payOS.paymentRequests.create(body);
