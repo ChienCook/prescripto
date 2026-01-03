@@ -36,7 +36,7 @@ const Login = () => {
                     toast.error(data.message);
                 }
             } else {
-                const res = await axios.post(backendUrl + 'api/user/register', { name, email, password });
+                const res = await axios.post(backendUrl + '/api/user/register', { name, email, password });
                 const { data } = res;
 
                 if (data.success) {

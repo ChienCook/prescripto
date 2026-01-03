@@ -39,7 +39,7 @@ const registerUser = async (req, res) => {
         // save user into Database
         const user = await newUser.save();
         // create user token
-        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
 
         res.json({ success: true, token });
     } catch (error) {
