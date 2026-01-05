@@ -11,6 +11,7 @@ const AdminContextProvider = (props) => {
 
     const [doctors, setDoctors] = useState();
     const [appointments, setAppointments] = useState([]);
+    const [dashData, setDashData] = useState(false);
 
     const getAllDoctors = async () => {
         try {
@@ -72,6 +73,20 @@ const AdminContextProvider = (props) => {
         }
     };
 
+    const getDashData = async () => {
+        try {
+            const res = await axios.get(backendUrl + '/api/admin/dashboard', { headers: { aToken } });
+            const { data } = res;
+            if (!data.success) {
+                toast.error(data.message);
+            }
+            setDashData(data.dashData);
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message);
+        }
+    };
+
     const value = {
         aToken,
         setAToken,
@@ -82,6 +97,8 @@ const AdminContextProvider = (props) => {
         appointments,
         setAppointments,
         getAllAppointments,
+        dashData,
+        getDashData,
     };
 
     return <AdminContext.Provider value={value}>{props.children}</AdminContext.Provider>;

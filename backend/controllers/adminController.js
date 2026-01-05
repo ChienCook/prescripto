@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 
 import doctorModel from '../models/doctorModel.js';
 import appointmentModel from '../models/appointmentModel.js';
+import userModel from '../models/userModel.js';
 
 const addDoctor = async (req, res) => {
     try {
@@ -143,4 +144,25 @@ const cancelAppointment = async (req, res) => {
     }
 };
 
-export { addDoctor, loginAdmin, allDoctors, appointmentsAdmin, cancelAppointment };
+// API to get dashboard data for admin panel
+const adminDashboard = async (req, res) => {
+    try {
+        const [users, doctors, appointments] = await Promise.all([
+            userModel.find({}).select('-password'),
+            doctorModel.find({}).select('-password'),
+            appointmentModel.find({}),
+        ]);
+        const dashData = {
+            doctors: doctors.length,
+            patients: users.length,
+            appointments: appointments.filter((item) => !item.canceled && !item.payment).length,
+            latestAppointments: appointments.reverse().slice(0, 5),
+        };
+        res.json({ success: true, dashData });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+};
+
+export { addDoctor, loginAdmin, allDoctors, appointmentsAdmin, cancelAppointment, adminDashboard };
