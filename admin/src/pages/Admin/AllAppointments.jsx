@@ -81,7 +81,6 @@ export const AllAppointment = () => {
                     </div>
                 ))}
             </div>
-            <ConfirmPopup></ConfirmPopup>
         </div>
     );
 };

@@ -166,7 +166,7 @@ const ConfirmPopup = ({ isOpen, onClose, onConfirm, type = 'payment' }) => {
                         {/* Nút Cancel (Màu xám nhạt) */}
                         <button
                             onClick={onClose}
-                            className="flex-1 px-5 py-3 rounded-xl text-gray-600 font-medium bg-gray-100 hover:bg-gray-200 transition-colors"
+                            className="flex-1 px-5 py-3 rounded-xl text-white font-medium bg-red-400 hover:bg-red-500 transition-colors"
                         >
                             Cancel
                         </button>
@@ -174,7 +174,7 @@ const ConfirmPopup = ({ isOpen, onClose, onConfirm, type = 'payment' }) => {
                         {/* Nút Action Chính (Màu #5F6FFF) */}
                         <button
                             onClick={onConfirm}
-                            className="flex-1 px-5 py-3 rounded-xl text-white font-medium bg-[#5F6FFF] hover:bg-[#4d5ce0] shadow-lg shadow-[#5F6FFF]/30 transition-all hover:-translate-y-0.5"
+                            className="flex-1 px-5 py-3 rounded-xl text-white font-medium bg-[#5F6FFF] hover:bg-[#4d5ce0] shadow-lg shadow-[#5F6FFF]/30 transition-all "
                         >
                             {type === 'payment' ? 'Pay Now' : 'Confirm'}
                         </button>
