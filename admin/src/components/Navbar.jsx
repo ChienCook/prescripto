@@ -3,9 +3,11 @@ import React, { useContext } from 'react';
 
 import { assets } from '@/assets/assets';
 import { AdminContext } from '@/context/AdminContext';
+import { DoctorContext } from '@/context/DoctorContext';
 
 const Navbar = () => {
     const { aToken, setAToken } = useContext(AdminContext);
+    const { dToken, setDToken } = useContext(DoctorContext);
 
     const navigate = useNavigate();
 
@@ -14,6 +16,10 @@ const Navbar = () => {
             navigate('/');
             localStorage.removeItem('aToken');
             setAToken(false);
+        } else if (dToken) {
+            navigate('/');
+            localStorage.removeItem('dToken');
+            setDToken(false);
         }
     };
     return (

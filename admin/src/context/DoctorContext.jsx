@@ -1,12 +1,15 @@
-import { createContext } from 'react';
+import { createContext, useState } from 'react';
 
-import { assets } from '@/assets/assets';
-
-export const doctorContext = createContext();
+export const DoctorContext = createContext();
 
 const DoctorContextProvider = (props) => {
-    const value = {};
-    return <doctorContext.Provider value={value}>{props.children}</doctorContext.Provider>;
+    const [dToken, setDToken] = useState(localStorage.getItem('dToken') || false);
+
+    const value = {
+        dToken,
+        setDToken,
+    };
+    return <DoctorContext.Provider value={value}>{props.children}</DoctorContext.Provider>;
 };
 
 export default DoctorContextProvider;

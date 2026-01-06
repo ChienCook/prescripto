@@ -4,6 +4,7 @@ import axios from 'axios';
 import { AdminContext } from '@/context/AdminContext';
 
 import { toast } from 'sonner';
+import { DoctorContext } from '@/context/DoctorContext';
 const Login = () => {
     const [state, setState] = useState('Admin');
 
@@ -11,6 +12,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
 
     const { setAToken, backendUrl } = useContext(AdminContext);
+    const { setDToken } = useContext(DoctorContext);
 
     // get token from backend JWT
     const onSubmitHandler = async (event) => {
@@ -25,6 +27,19 @@ const Login = () => {
                 if (data.success) {
                     localStorage.setItem('aToken', data.token);
                     setAToken(data.token);
+                } else {
+                    toast.error(data.message);
+                }
+            } else if (state === 'Doctor') {
+                const res = await axios.post(backendUrl + '/api/doctor/login', {
+                    email,
+                    password,
+                });
+                const { data } = res;
+                if (data.success) {
+                    localStorage.setItem('dToken', data.token);
+                    setDToken(data.token);
+                    console.log(data.token);
                 } else {
                     toast.error(data.message);
                 }

@@ -10,6 +10,8 @@ const doctorSchema = new mongoose.Schema(
             type: String,
             required: true,
             unique: true,
+            trim: true, // remove spacing from begin and last side
+            lowercase: true,
         },
         password: {
             type: String,
