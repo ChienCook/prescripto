@@ -272,7 +272,7 @@ const cancelAppointment = async (req, res) => {
         });
 
         // soft delete
-        await appointmentModel.findByIdAndUpdate(appointmentId, { canceled: true });
+        await appointmentModel.findByIdAndUpdate(appointmentId, { status: 'canceled' });
         res.json({ success: true, message: 'Appointment Canceled' });
     } catch (error) {
         console.log(error);

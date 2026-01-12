@@ -6,6 +6,7 @@ import axios from 'axios';
 import { assets } from '@/assets/assets';
 import RelatedDoctors from '@/components/RelatedDoctors';
 import { AppContext } from '@/context/AppContext';
+import ConfirmPopup from '@/components/ConfirmPopup';
 
 const Appointment = () => {
     const { docId } = useParams();
@@ -15,6 +16,8 @@ const Appointment = () => {
     const [docSlots, setDocSlots] = useState([]);
     const [slotIndex, setSlotIndex] = useState(0);
     const [slotTime, setSlotTime] = useState('');
+
+    const [isOpen, setIsOpen] = useState(false);
 
     const navigate = useNavigate();
 
@@ -208,7 +211,9 @@ const Appointment = () => {
                             ))}
                     </div>
                     <button
-                        onClick={bookAppointment}
+                        onClick={() => {
+                            setIsOpen(true);
+                        }}
                         className="bg-primary text-white text-sm font-light px-14 py-3 rounded-3xl mt-5 hover:scale-105 transition-all duration-500"
                     >
                         Book an appointment
@@ -216,6 +221,12 @@ const Appointment = () => {
                 </div>
 
                 <RelatedDoctors docId={docId} speciality={docInfo.speciality}></RelatedDoctors>
+                <ConfirmPopup
+                    isOpen={isOpen}
+                    onClose={() => setIsOpen(false)}
+                    onConfirm={bookAppointment}
+                    type="booking"
+                ></ConfirmPopup>
             </div>
         )
     );

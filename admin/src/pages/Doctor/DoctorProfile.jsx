@@ -137,7 +137,7 @@ const DoctorProfile = () => {
                                 name=""
                                 id=""
                             />
-                            <label htmlFor="" className={isEdit && 'bg-gray-100'}>
+                            <label htmlFor="" className={isEdit ? 'bg-gray-100' : undefined}>
                                 Available
                             </label>
                         </div>

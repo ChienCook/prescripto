@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import { AppContext } from '@/context/AppContext';
 import { assets } from '@/assets/assets';
+import ConfirmPopup from '@/components/ConfirmPopup';
 
 const MyProfile = () => {
     const { userData, setUserData, backendUrl, token, loadUserProfileData } = useContext(AppContext);
@@ -12,9 +13,12 @@ const MyProfile = () => {
     const [image, setImage] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
+    const [isOpen, setIsOpen] = useState(false);
+
     const updateUserProfileData = async () => {
         try {
             setIsLoading(true);
+            setIsOpen(false);
             const userFormData = new FormData();
             userFormData.append('name', userData.name);
             userFormData.append('email', userData.email);
@@ -170,7 +174,9 @@ const MyProfile = () => {
                         ? 'bg-gray-200 text-gray-500 cursor-not-allowed opacity-50' // Style when loading
                         : 'hover:bg-primary hover:text-white' // Normal style
                 }`}
-                            onClick={updateUserProfileData}
+                            onClick={() => {
+                                setIsOpen(true);
+                            }}
                         >
                             {isLoading ? 'Saving...' : 'Save information'}
                         </button>
@@ -183,6 +189,15 @@ const MyProfile = () => {
                         </button>
                     )}
                 </div>
+                <ConfirmPopup
+                    isOpen={isOpen}
+                    onClose={() => {
+                        setIsEdit(false);
+                        setIsOpen(false);
+                    }}
+                    onConfirm={updateUserProfileData}
+                    type="profile"
+                ></ConfirmPopup>
             </div>
         )
     );

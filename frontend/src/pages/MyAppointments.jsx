@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import axios from 'axios';
-import { usePayOS } from '@payos/payos-checkout';
 
+import { usePayOS } from '@payos/payos-checkout';
 import { AppContext } from '@/context/AppContext';
+import ConfirmPopup from '@/components/ConfirmPopup';
 
 const MyAppointments = () => {
     const { token, backendUrl, getDoctorsData } = useContext(AppContext);
@@ -97,6 +98,8 @@ const MyAppointments = () => {
     useEffect(() => {
         if (token) {
             getUserAppointments();
+        } else {
+            setAppointmentsData(false);
         }
     }, [token]);
 
@@ -131,7 +134,7 @@ const MyAppointments = () => {
                             {/* this below div is added to make component reponsive */}
                             <div></div>
                             <div className="flex flex-col gap-2 justify-end">
-                                {!item.canceled && !item.payment && (
+                                {item.status === 'pending' && !item.payment && (
                                     <button
                                         onClick={() => createPayment(item._id)}
                                         className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300"
@@ -140,13 +143,13 @@ const MyAppointments = () => {
                                     </button>
                                 )}
 
-                                {!item.canceled && item.payment && (
+                                {item.status === 'pending' && item.payment && (
                                     <button className="text-sm text-center sm:min-w-48 py-2 border rounded bg-primary text-white transition-all duration-300">
                                         Paid
                                     </button>
                                 )}
 
-                                {!item.canceled && !item.payment && (
+                                {item.status === 'pending' && !item.payment && (
                                     <button
                                         onClick={() => cancelAppointmentHandle(item._id)}
                                         className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration-300"

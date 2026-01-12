@@ -7,12 +7,16 @@ const AppContextProvider = (props) => {
     const currency = '$';
     const calculateAge = (dob) => {
         // dob: 2002-01-01
-        const currentYear = Number(new Date().getFullYear().toString());
-        const result = currentYear - Number(dob.split('-')[0]);
-        if (isNaN(result)) {
-            return 'unknow';
+        const birthDate = new Date(dob);
+        const today = new Date();
+
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
         }
-        return result;
+
+        return age <= 0 ? 'unknown' : age;
     };
 
     const standardSlotDate = (slotDate) => {

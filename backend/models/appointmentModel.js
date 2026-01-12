@@ -24,6 +24,11 @@ const appointmentSchema = new mongoose.Schema({
     isCompleted: { type: Boolean, default: false },
 
     orderCode: { type: Number, default: null },
+    status: {
+        type: String,
+        enum: ['pending', 'confirmed', 'completed', 'canceled'],
+        default: 'pending',
+    },
 });
 
 const appointmentModel = mongoose.models.appointment || mongoose.model('appointment', appointmentSchema);
