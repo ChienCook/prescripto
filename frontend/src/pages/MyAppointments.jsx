@@ -11,6 +11,10 @@ const MyAppointments = () => {
     const [appointmentsData, setAppointmentsData] = useState([]);
     const monthsOfYear = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
+    const [isOpen, setIsOpen] = useState(false);
+    const [currentAppointmentId, setCurrentAppointmentId] = useState(false);
+    const [popupType, setPopupType] = useState('');
+
     const getUserAppointments = async () => {
         try {
             const res = await axios.get(backendUrl + '/api/user/get-appointments', { headers: { token } });
@@ -115,58 +119,94 @@ const MyAppointments = () => {
                 <div id="payos-checkout-iframe"></div>
                 <p className="pb-3 mt-12 font-medium text-zinc-700 border-b">My Appointments</p>
                 <div>
-                    {appointmentsData.map((item, index) => (
-                        <div key={index} className="grid grid-cols-[1fr_2fr] gap-4 sm:flex sm:gap-6 py-2 border-b">
-                            <div>
-                                <img className="w-32 bg-indigo-50" src={item.doctorData.image} alt="" />
+                    {appointmentsData
+                        .slice()
+                        .sort((item1) => {
+                            if (item1.status === 'pending') {
+                                return -1;
+                            } else return 1;
+                        })
+                        .map((item, index) => (
+                            <div key={index} className="grid grid-cols-[1fr_2fr] gap-4 sm:flex sm:gap-6 py-2 border-b">
+                                <div>
+                                    <img className="w-32 bg-indigo-50" src={item.doctorData.image} alt="" />
+                                </div>
+                                <div className="flex-1 text-sm text-zinc-600">
+                                    <p className="text-neutral-800 font-semibold">{item.doctorData.name}</p>
+                                    <p>{item.doctorData.speciality}</p>
+                                    <p className="text-zinc-700 font-medium mt-1">Address: </p>
+                                    <p className="text-xs">{item.doctorData.address.line1}</p>
+                                    <p className="text-xs mt-1">{item.doctorData.address.line2}</p>
+                                    <p className="text-xs mt-1">
+                                        <span className="text-sm text-neutral-700 font-medium">Date & Time: </span>
+                                        {item.date}, {item.month}, {item.year} | {item.time}
+                                    </p>
+                                </div>
+                                {/* this below div is added to make component reponsive */}
+                                <div></div>
+                                <div className="flex flex-col gap-2 justify-end">
+                                    {item.status === 'pending' && item.payment === 'unpaid' && (
+                                        <button
+                                            onClick={() => {
+                                                setIsOpen(true);
+                                                setPopupType('payment');
+                                                setCurrentAppointmentId(item._id);
+                                            }}
+                                            className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300"
+                                        >
+                                            Pay Online
+                                        </button>
+                                    )}
+                                    {item.status === 'pending' && item.payment === 'paid' && (
+                                        <button className="text-sm text-center sm:min-w-48 py-2 border rounded bg-primary text-white transition-all duration-300">
+                                            Paid
+                                        </button>
+                                    )}
+                                    {item.status === 'pending' && item.payment === 'unpaid' && (
+                                        <button
+                                            onClick={() => {
+                                                setIsOpen(true);
+                                                setPopupType('appointment');
+                                                setCurrentAppointmentId(item._id);
+                                            }}
+                                            className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration-300"
+                                        >
+                                            Cancle appointment
+                                        </button>
+                                    )}
+                                    {item.status === 'canceled' && (
+                                        <div className="sm:m-auto sm:min-w-48 py-2 px-3 bg-red-50 text-red-600 rounded-full text-sm font-medium text-center shadow-sm border border-red-100">
+                                            Appointment Canceled
+                                        </div>
+                                    )}
+                                    {item.status === 'completed' && (
+                                        <div className="sm:m-auto sm:min-w-48 py-2 px-3 bg-green-50 text-green-600 rounded-full text-sm font-medium text-center shadow-sm border border-green-100">
+                                            Appointment Completed
+                                        </div>
+                                    )}
+                                    {item.status === 'canceledByDoctor' && (
+                                        <div className="sm:m-auto sm:min-w-48 py-2 px-3 bg-yellow-50 text-yellow-400 rounded-full text-sm font-medium text-center shadow-sm border border-yellow-100">
+                                            Declined By Doctor
+                                        </div>
+                                    )}
+                                </div>
                             </div>
-                            <div className="flex-1 text-sm text-zinc-600">
-                                <p className="text-neutral-800 font-semibold">{item.doctorData.name}</p>
-                                <p>{item.doctorData.speciality}</p>
-                                <p className="text-zinc-700 font-medium mt-1">Address: </p>
-                                <p className="text-xs">{item.doctorData.address.line1}</p>
-                                <p className="text-xs mt-1">{item.doctorData.address.line2}</p>
-                                <p className="text-xs mt-1">
-                                    <span className="text-sm text-neutral-700 font-medium">Date & Time: </span>
-                                    {item.date}, {item.month}, {item.year} | {item.time}
-                                </p>
-                            </div>
-                            {/* this below div is added to make component reponsive */}
-                            <div></div>
-                            <div className="flex flex-col gap-2 justify-end">
-                                {item.status === 'pending' && !item.payment && (
-                                    <button
-                                        onClick={() => createPayment(item._id)}
-                                        className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300"
-                                    >
-                                        Pay Online
-                                    </button>
-                                )}
-
-                                {item.status === 'pending' && item.payment && (
-                                    <button className="text-sm text-center sm:min-w-48 py-2 border rounded bg-primary text-white transition-all duration-300">
-                                        Paid
-                                    </button>
-                                )}
-
-                                {item.status === 'pending' && !item.payment && (
-                                    <button
-                                        onClick={() => cancelAppointmentHandle(item._id)}
-                                        className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration-300"
-                                    >
-                                        Cancle appointment
-                                    </button>
-                                )}
-
-                                {item.canceled && (
-                                    <button className="sm:min-w-48 py-2 border border-red-500 text-red-500 rounded">
-                                        Appointment canceled
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                    ))}
+                        ))}
                 </div>
+                <ConfirmPopup
+                    isOpen={isOpen}
+                    onClose={() => setIsOpen(false)}
+                    onConfirm={() => {
+                        if (popupType === 'appointment') {
+                            cancelAppointmentHandle(currentAppointmentId);
+                            setIsOpen(false);
+                        } else {
+                            createPayment(currentAppointmentId);
+                            setIsOpen(false);
+                        }
+                    }}
+                    type={popupType}
+                ></ConfirmPopup>
             </div>
         )
     );

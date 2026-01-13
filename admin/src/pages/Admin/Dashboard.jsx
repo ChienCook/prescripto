@@ -82,10 +82,10 @@ const Dashboard = () => {
                                     <p className="text-lg font-medium text-gray-800">{item.userData.name}</p>
                                     <p className="text-gray-600">Booking on {standardSlotDate(item.slotDate)}</p>
                                 </div>
-                                {item.canceled && !item.payment && (
-                                    <p className="text-red-400 text-xs font-medium">Canceled</p>
+                                {item.status === 'canceled' && item.payment === 'unpaid' && (
+                                    <p className="text-red-400 text-xs font-medium">Canceled by Patient</p>
                                 )}
-                                {!item.canceled && !item.payment && (
+                                {item.status === 'pending' && item.payment === 'unpaid' && (
                                     <img
                                         src={assets.cancel_icon}
                                         alt=""
@@ -96,8 +96,14 @@ const Dashboard = () => {
                                         }}
                                     />
                                 )}
-                                {!item.canceled && item.payment && (
+                                {item.status === 'pending' && item.payment === 'paid' && (
                                     <p className="text-green-400 text-xs font-medium">Paid</p>
+                                )}
+                                {item.status === 'completed' && item.payment === 'paid' && (
+                                    <p className="text-green-500 text-xs font-medium">Completed</p>
+                                )}
+                                {item.status === 'canceledByDoctor' && (
+                                    <p className="text-yellow-400 text-xs font-medium">Declined by Doctor</p>
                                 )}
                             </div>
                         ))}

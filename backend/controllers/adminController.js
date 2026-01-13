@@ -135,7 +135,7 @@ const cancelAppointment = async (req, res) => {
         });
 
         // cancel on appointment
-        await appointmentModel.findByIdAndUpdate(appointmentId, { canceled: true });
+        await appointmentModel.findByIdAndUpdate(appointmentId, { status: 'canceledByDoctor' });
 
         res.json({ success: true, message: 'Cancled appointment successfully' });
     } catch (error) {

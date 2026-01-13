@@ -30,7 +30,7 @@ function DoctorDashboard() {
                 if (!patiens.includes(item.userData.name)) {
                     patiens.push(item.userData.name);
                 }
-                if (item.isCompleted) {
+                if (item.status === 'completed') {
                     earning += item.amount;
                 }
             });
@@ -91,22 +91,25 @@ function DoctorDashboard() {
                                         Booking on {item.slotTime + ', ' + standardSlotDate(item.slotDate)}
                                     </p>
                                 </div>
-                                {item.canceled && !item.payment && (
-                                    <p className="text-red-400 text-xs font-medium">Canceled</p>
-                                )}
-                                {!item.canceled && !item.payment && (
+                                {item.status === 'pending' && (
                                     <img
-                                        src={assets.cancel_icon}
-                                        alt=""
-                                        className="w-10 cursor-pointer"
                                         onClick={() => {
                                             setIsOpen(true);
                                             setCurrentAppointmentId(item._id);
                                         }}
+                                        src={assets.cancel_icon}
+                                        alt=""
+                                        className="w-10 cursor-pointer"
                                     />
                                 )}
-                                {!item.canceled && item.payment && (
-                                    <p className="text-green-400 text-xs font-medium">Paid</p>
+                                {item.status === 'canceled' && item && item.payment === 'unpaid' && (
+                                    <p className="text-red-400 font-medium text-xs">Canceled by Patient</p>
+                                )}
+                                {item.status === 'completed' && (
+                                    <p className="text-green-500 font-medium text-xs">Completed</p>
+                                )}
+                                {item.status === 'canceledByDoctor' && (
+                                    <p className="text-yellow-400 font-medium text-xs">Declined by Doctor</p>
                                 )}
                             </div>
                         ))}

@@ -79,7 +79,7 @@ const completeAppointment = async (req, res) => {
         //     (time) => time !== appointmentData.slotTime,
         // );
 
-        await appointmentModel.findByIdAndUpdate(appointmentId, { isCompleted: true });
+        await appointmentModel.findByIdAndUpdate(appointmentId, { status: 'completed' });
         res.json({ success: true, message: 'Appointment Complete!' });
     } catch (error) {
         console.log(error);
@@ -103,7 +103,7 @@ const cancelAppointment = async (req, res) => {
             (time) => time !== appointmentData.slotTime,
         );
 
-        await appointmentModel.findByIdAndUpdate(appointmentId, { canceled: true });
+        await appointmentModel.findByIdAndUpdate(appointmentId, { status: 'canceledByDoctor' });
         await doctorModel.findByIdAndUpdate(doctorId, { slot_booked });
         res.json({ success: true, message: 'Appointment Canceled!' });
     } catch (error) {

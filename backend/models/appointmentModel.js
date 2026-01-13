@@ -19,14 +19,14 @@ const appointmentSchema = new mongoose.Schema({
 
     canceled: { type: Boolean, default: false },
 
-    payment: { type: Boolean, default: false },
+    payment: { type: String, enum: ['paid', 'unpaid', 'refunded'], default: 'unpaid' },
 
     isCompleted: { type: Boolean, default: false },
 
     orderCode: { type: Number, default: null },
     status: {
         type: String,
-        enum: ['pending', 'confirmed', 'completed', 'canceled'],
+        enum: ['pending', 'confirmed', 'completed', 'canceled', 'canceledByDoctor'],
         default: 'pending',
     },
 });

@@ -16,12 +16,12 @@ const DoctorAppointments = () => {
     return (
         appointments && (
             <div className="m-5 w-full max-w-6xl">
-                <p className="mb-3 text-lg font-medium">All Appointment</p>
+                <p className="mb-3 text-lg font-medium">All Appointment ({appointments.length})</p>
                 <div className="bg-white border rounded text-sm max-h-[80vh] min-h-[50vh] overflow-y-scroll">
                     <div className="max-sm:hidden grid grid-cols-[0.5fr_2fr_1fr_1fr_3fr_1fr_1fr] gap-1 py-3 px-6 border-b">
                         <p>#</p>
                         <p>Paitent</p>
-                        <p>Payment Method</p>
+                        <p>Payment</p>
                         <p>Age</p>
                         <p>Date & Time</p>
                         <p>Fees</p>
@@ -39,10 +39,19 @@ const DoctorAppointments = () => {
                                 <p>{item.userData.name}</p>
                             </div>
                             <div>
-                                <p className="text-xs inline border border-primary px-2 rounded-full text-green-500">
-                                    {item.payment ? 'Online' : 'CASH'}
-                                </p>
-                                {item.payment && <p className="text-green-600 inline"> - PAID</p>}
+                                {item.payment === 'unpaid' ? (
+                                    <p className="text-xs inline border border-primary px-2 rounded-full text-yellow-500">
+                                        Unpaid
+                                    </p>
+                                ) : item.payment === 'paid' ? (
+                                    <p className="text-xs inline border border-primary px-2 rounded-full text-green-500">
+                                        Online Paid
+                                    </p>
+                                ) : (
+                                    <p className="text-xs inline border border-primary px-2 rounded-full text-red-400">
+                                        Refunded
+                                    </p>
+                                )}
                             </div>
                             <p className="max-sm:hidden">{calculateAge(item.userData.dob)}</p>
                             <p>
@@ -50,7 +59,7 @@ const DoctorAppointments = () => {
                             </p>
                             <p>{currency + item.doctorData.fees}</p>
                             <div className="flex gap-1">
-                                {!item.payment && !item.canceled && !item.isCompleted && (
+                                {item.status === 'pending' && (
                                     <>
                                         <img
                                             onClick={() => cancelAppointment(item._id)}
@@ -66,9 +75,14 @@ const DoctorAppointments = () => {
                                         />
                                     </>
                                 )}
-                                {!item.payment && item.canceled && <p className="text-red-400 font-medium">Canceled</p>}
-                                {item.isCompleted && !item.canceled && (
-                                    <p className="text-green-500 font-medium">Completed</p>
+                                {item.status === 'canceled' && item.payment === 'unpaid' && (
+                                    <p className="text-red-400 text-xs font-medium">Canceled by Patient</p>
+                                )}
+                                {item.status === 'completed' && (
+                                    <p className="text-green-500 text-xs font-medium">Completed</p>
+                                )}
+                                {item.status === 'canceledByDoctor' && (
+                                    <p className="text-yellow-400 text-xs font-medium">Declined by Doctor</p>
                                 )}
                             </div>
                         </div>

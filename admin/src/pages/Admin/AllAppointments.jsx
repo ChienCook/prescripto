@@ -68,8 +68,10 @@ export const AllAppointment = () => {
                             <p>{item.doctorData.name}</p>
                         </div>
                         <p>{currency + item.doctorData.fees}</p>
-                        {item.canceled && !item.payment && <p className="text-red-400 text-xs font-medium">Canceled</p>}
-                        {!item.canceled && !item.payment && (
+                        {item.status === 'canceled' && item.payment === 'unpaid' && (
+                            <p className="text-red-400 text-xs font-medium">Canceled by Patient</p>
+                        )}
+                        {item.status === 'pending' && item.payment === 'unpaid' && (
                             <img
                                 src={assets.cancel_icon}
                                 alt=""
@@ -77,7 +79,15 @@ export const AllAppointment = () => {
                                 onClick={() => cancelAppointmentHandler(item._id)}
                             />
                         )}
-                        {!item.canceled && item.payment && <p className="text-green-400 text-xs font-medium">Paid</p>}
+                        {item.status === 'pending' && item.payment === 'paid' && (
+                            <p className="text-green-400 text-xs font-medium">Paid</p>
+                        )}
+                        {item.status === 'completed' && item.payment === 'paid' && (
+                            <p className="text-green-500 text-xs font-medium">Completed</p>
+                        )}
+                        {item.status === 'canceledByDoctor' && (
+                            <p className="text-yellow-400 text-xs font-medium">Declined by Doctor</p>
+                        )}
                     </div>
                 ))}
             </div>

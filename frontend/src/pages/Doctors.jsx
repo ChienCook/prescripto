@@ -112,9 +112,15 @@ const Doctors = () => {
                             >
                                 <img src={item.image} alt="" className="bg-blue-50" />
                                 <div className="p-4">
-                                    <div className="flex text-sm gap-2 items-center text-green-500 text-center">
-                                        <p className="w-2 h-2 rounded-full bg-green-500"></p>
-                                        <p>Available</p>
+                                    <div className="flex text-sm gap-2 items-centerX text-center">
+                                        <p
+                                            className={`w-2 h-2  rounded-full ${
+                                                item.available ? 'bg-green-500' : 'bg-yellow-500'
+                                            }`}
+                                        ></p>
+                                        <p className={`${item.available ? 'text-green-500' : 'text-yellow-500'}`}>
+                                            {item.available ? 'Available' : 'Unavailable'}
+                                        </p>
                                     </div>
                                     <div className="flex flex-col">
                                         <p className="text-lg text-gray-900 font-medium whitespace-nowrap">
