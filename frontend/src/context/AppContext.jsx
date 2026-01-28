@@ -11,6 +11,7 @@ const AppContextProvider = (props) => {
 
     const currencySymbol = '$';
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    const adminUrl = import.meta.env.VITE_ADMIN_URL;
 
     const getDoctorsData = async () => {
         try {
@@ -67,6 +68,7 @@ const AppContextProvider = (props) => {
         userData,
         setUserData,
         loadUserProfileData,
+        adminUrl,
     };
 
     return <AppContext.Provider value={value}>{props.children}</AppContext.Provider>;

@@ -5,7 +5,7 @@ import { assets } from '@/assets/assets';
 import { AppContext } from '@/context/AppContext';
 
 const Navbar = () => {
-    const { token, setToken, userData } = useContext(AppContext);
+    const { token, setToken, userData, adminUrl } = useContext(AppContext);
 
     const navigate = useNavigate(); // redirect
     const [showMenu, setShowMenu] = useState(false);
@@ -43,6 +43,9 @@ const Navbar = () => {
                     <li className="py-1">CONTACT</li>
                     <hr className="border-none outline-none h-0.5 w-3/5 m-auto bg-primary hidden" />
                 </NavLink>
+                <a target="_blank" href={`${adminUrl}`} className="border px-5 text-xs py-1.5 rounded-full">
+                    Admin Panel
+                </a>
             </ul>
             <div className="flex items-center gap-4">
                 {token && userData ? (
