@@ -56,6 +56,12 @@ const Login = () => {
     return (
         <form onSubmit={onSubmitHandle} className="min-h-[70vh] flex items-center">
             <div className="flex flex-col gap-3 m-auto p-8 min-w-[340px] sm:min-w-96 border rounded-xl text-zinc-600 text-sm shadow-lg">
+                <div className="mb-5 p-3 bg-gray-100 rounded-lg border border-gray-300 text-sm">
+                    <p className="font-medium text-gray-700 mb-1">Demo Access:</p>
+                    <p>
+                        <span className="font-semibold">Patient:</span> hungdn@demo.com / 12345678
+                    </p>
+                </div>
                 <p className="text-2xl font-semibold">{state === 'Sign Up' ? 'Create Account' : 'Login'}</p>
                 <p>Please {state === 'Sign Up' ? 'sign up' : 'log in'} to book appointment</p>
                 {state === 'Sign Up' && (

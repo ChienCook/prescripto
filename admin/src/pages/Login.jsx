@@ -55,6 +55,15 @@ const Login = () => {
                 <p className="text-2xl font-semibold m-auto">
                     <span className="text-primary">{state}</span> Login
                 </p>
+                <div className="mb-5 p-3 bg-gray-100 rounded-lg border border-gray-300 text-sm">
+                    <p className="font-medium text-gray-700 mb-1">Demo Access:</p>
+                    <p>
+                        <span className="font-semibold">Admin:</span> admin@demo.com / 12345678
+                    </p>
+                    <p>
+                        <span className="font-semibold">Doctor:</span> Richard@prescripto.com / 12345678
+                    </p>
+                </div>
                 <div className="w-full">
                     <p>Email</p>
                     <input
